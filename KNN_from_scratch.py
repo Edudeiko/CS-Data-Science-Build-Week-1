@@ -3,7 +3,7 @@ import numpy as np
 from math import sqrt
 
 
-# Build K-Nearest Neighbor class
+# Build K-Nearest Neighbor classifier
 class KNN:
     '''K-Nearest Neighbour Classifier'''
     def __init__(self, target_classes):
@@ -20,7 +20,7 @@ class KNN:
     # StandardScaler
     def fit(self, X):
         '''scale the data'''
-        self.mean_X = np.mean_X(X, axis=0)
+        self.mean_X = np.mean(X, axis=0)
         self.scaled_X = np.std(X - self.mean_X, axis=0)
         return self
 
@@ -49,7 +49,7 @@ class KNN:
         for ii in range(len(X_test)):
 
             # distance between test indices and all of the training set indices
-            distance = np.array([euclidean_distance(X_test[ii], x_ind) for x_ind in self.X_train)]
+            distance = np.array([self.euclidean_distance(X_test[ii], x_ind) for x_ind in self.X_train])
 
             # sort index from ascending to descending order of target classes
             distance_sorted = distance.argsort()[:self.target_classes]
