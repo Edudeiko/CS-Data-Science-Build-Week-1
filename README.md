@@ -1,4 +1,4 @@
-# [Blog post](https://edudeiko.github.io/2020-10-21-KNN-from-scratch/)
+| [Blog post](https://edudeiko.github.io/2020-10-21-KNN-from-scratch/) |
 
 # CS Build Week I for Data Science Students
 
