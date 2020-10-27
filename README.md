@@ -1,3 +1,5 @@
+# [Blog post](https://edudeiko.github.io/2020-10-21-KNN-from-scratch/)
+
 # CS Build Week I for Data Science Students
 
 For your first CS Build Week, you'll be implementing a few watershed
