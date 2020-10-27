@@ -8,7 +8,7 @@ probably heard of these algorithms before. You might even have an idea
 of how they work. But to really solidify your understanding of them,
 you're going to implement them and then use your implementation just
 like how you would if you'd imported the algorithm from a data science
-or machine learning library. 
+or machine learning library.
 
 [Rubric](Rubric.md)
 
