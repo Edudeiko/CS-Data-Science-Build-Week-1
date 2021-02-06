@@ -16,7 +16,7 @@ class KNN:
         for row in filename:
             dataset.append(row)
         return dataset
-    
+
     # StandardScaler
     def fit(self, X):
         '''scale the data'''
@@ -40,7 +40,7 @@ class KNN:
     def euclidean_distance(self, row1, row2):
         '''Euclidian distance'''
         return np.sqrt(np.sum((row1 - row2) ** 2))
-    
+
     def predict(self, X_test):
         '''predict the distance of KNN'''
         y = np.zeros(len(X_test))
@@ -57,7 +57,7 @@ class KNN:
             # for each neighbor find the target_class
             nearest_label = [self.y_train[ii] for ii in distance_sorted]
 
-            y[ii] = max(set(nearest_label), key = nearest_label.count)
+            y[ii] = max(set(nearest_label), key=nearest_label.count)
 
         return y
 
