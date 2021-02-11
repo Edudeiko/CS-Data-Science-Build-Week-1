@@ -32,7 +32,7 @@ df['data'].shape  # check the shape of the data
 df['target'].shape  # compare the data shape to the target
 
 # split the data to train, test
-X_train, X_test, y_train, y_test = train_test_split(dataset, target, test_size = 0.30, random_state=6)
+X_train, X_test, y_train, y_test = train_test_split(dataset, target, test_size=0.30, random_state=6)
 
 print(len(X_train), len(X_test), len(y_train), len(y_test))
 
@@ -56,7 +56,7 @@ print(classification_report(y_test, predictions, target_names=df['target_names']
 print('Original value: %d, Predicted value: %d.' % (y_test[10], predictions[10]))
 
 # plot confusion matrix
-cm = confusion_matrix(y_test, predictions) #, normalize='all')  # can normalize the output
+cm = confusion_matrix(y_test, predictions)  #, normalize='all')  # can normalize the output
 cmd = ConfusionMatrixDisplay(cm, display_labels=['malignant', 'benign'])
 cmd.plot()
 
