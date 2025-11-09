@@ -1,66 +1,132 @@
-# load libraries
+"""K-Nearest Neighbors classifier implementation from scratch."""
 import numpy as np
-from math import sqrt
+from typing import Optional
 
 
-# Build K-Nearest Neighbor classifier
 class KNN:
-    '''K-Nearest Neighbour Classifier'''
-    def __init__(self, target_classes):
-        '''Specify a number of target classes'''
-        self.target_classes = target_classes
+    """K-Nearest Neighbors Classifier.
 
-    def load_data(self, filename):
-        '''loads array list'''
-        dataset = list()
-        for row in filename:
-            dataset.append(row)
-        return dataset
+    Parameters:
+        k (int): Number of nearest neighbors to consider for classification.
+    """
 
-    # StandardScaler
-    def fit(self, X):
-        '''scale the data'''
-        self.mean_X = np.mean(X, axis=0)
-        self.scaled_X = np.std(X - self.mean_X, axis=0)
+    def __init__(self, k: int = 5):
+        """Initialize KNN classifier with k neighbors."""
+        self.k = k
+        self.X_train: Optional[np.ndarray] = None
+        self.y_train: Optional[np.ndarray] = None
+
+    def fit(self, X: np.ndarray, y: np.ndarray) -> 'KNN':
+        """Store training data.
+
+        Args:
+            X: Training features of shape (n_samples, n_features).
+            y: Training labels of shape (n_samples,).
+
+        Returns:
+            self: The fitted classifier.
+        """
+        self.X_train = X
+        self.y_train = y
         return self
 
-    def transform(self, X):
-        '''transform data'''
-        return (X - self.mean_X) / self.scaled_X
+    def euclidean_distance(self, row1: np.ndarray, row2: np.ndarray) -> float:
+        """Calculate Euclidean distance between two points.
 
-    def fit_transform(self, X):
-        '''fit_transform data'''
-        return self.fit(X).transform(X)
+        Args:
+            row1: First data point.
+            row2: Second data point.
 
-    def fit_(self, X, y_train):
-        '''fit train data before predict'''
-        self.X_train = X
-        self.y_train = y_train
-
-    def euclidean_distance(self, row1, row2):
-        '''Euclidian distance'''
+        Returns:
+            float: Euclidean distance.
+        """
         return np.sqrt(np.sum((row1 - row2) ** 2))
 
-    def predict(self, X_test):
-        '''predict the distance of KNN'''
-        y = np.zeros(len(X_test))
+    def predict(self, X_test: np.ndarray) -> np.ndarray:
+        """Predict class labels for test data.
 
-        # iterate through the test set
-        for ii in range(len(X_test)):
+        Args:
+            X_test: Test features of shape (n_samples, n_features).
 
-            # distance between test indices and all of the training set indices
-            distance = np.array([self.euclidean_distance(X_test[ii], x_ind) for x_ind in self.X_train])
+        Returns:
+            np.ndarray: Predicted labels of shape (n_samples,).
+        """
+        y_pred = np.zeros(len(X_test))
 
-            # sort index from ascending to descending order of target classes
-            distance_sorted = distance.argsort()[:self.target_classes]
+        for i in range(len(X_test)):
+            # Calculate distances to all training points
+            distances = np.array([
+                self.euclidean_distance(X_test[i], x_train)
+                for x_train in self.X_train
+            ])
 
-            # for each neighbor find the target_class
-            nearest_label = [self.y_train[ii] for ii in distance_sorted]
+            # Get indices of k nearest neighbors
+            k_nearest_indices = distances.argsort()[:self.k]
 
-            y[ii] = max(set(nearest_label), key=nearest_label.count)
+            # Get labels of k nearest neighbors
+            k_nearest_labels = [self.y_train[idx] for idx in k_nearest_indices]
 
-        return y
+            # Vote: most common label wins
+            y_pred[i] = max(set(k_nearest_labels), key=k_nearest_labels.count)
 
-    def accuracy(self, y_test, y_pred):
-        '''print an accuracy score'''
-        return f'Accuracy score: {np.mean(y_test==y_pred)}'
+        return y_pred
+
+    def accuracy(self, y_test: np.ndarray, y_pred: np.ndarray) -> float:
+        """Calculate accuracy score.
+
+        Args:
+            y_test: True labels.
+            y_pred: Predicted labels.
+
+        Returns:
+            float: Accuracy score between 0 and 1.
+        """
+        return np.mean(y_test == y_pred)
+
+
+class StandardScaler:
+    """Standardize features by removing mean and scaling to unit variance.
+
+    The standard score of a sample x is calculated as:
+        z = (x - mean) / std
+    """
+
+    def __init__(self):
+        """Initialize StandardScaler."""
+        self.mean_: Optional[np.ndarray] = None
+        self.std_: Optional[np.ndarray] = None
+
+    def fit(self, X: np.ndarray) -> 'StandardScaler':
+        """Compute the mean and std to be used for scaling.
+
+        Args:
+            X: Training data of shape (n_samples, n_features).
+
+        Returns:
+            self: Fitted scaler.
+        """
+        self.mean_ = np.mean(X, axis=0)
+        self.std_ = np.std(X, axis=0)
+        return self
+
+    def transform(self, X: np.ndarray) -> np.ndarray:
+        """Scale features using previously computed mean and std.
+
+        Args:
+            X: Data to transform of shape (n_samples, n_features).
+
+        Returns:
+            np.ndarray: Transformed data.
+        """
+        return (X - self.mean_) / self.std_
+
+    def fit_transform(self, X: np.ndarray) -> np.ndarray:
+        """Fit to data, then transform it.
+
+        Args:
+            X: Data to fit and transform of shape (n_samples, n_features).
+
+        Returns:
+            np.ndarray: Transformed data.
+        """
+        return self.fit(X).transform(X)
