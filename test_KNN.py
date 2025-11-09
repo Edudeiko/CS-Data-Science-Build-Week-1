@@ -22,8 +22,8 @@ for key in df:
     # Print keys from dataset
     print(f'* {key}')
 
-# Initialize KNN with k=5 neighbors (not number of classes)
-knn = KNN(k=5)
+# Initialize KNN with k=2 neighbors (same as original target_classes=2)
+knn = KNN(k=2)
 
 # Get data and target
 dataset = df['data']
